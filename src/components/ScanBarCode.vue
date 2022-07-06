@@ -26,11 +26,16 @@ export default {
   methods: {
     // 摄像头开启
     cameraStart() {
+      let video = document.getElementById("camera");
+      let canvas = document.getElementById("canvas");
+      let Context = canvas.getContext("2d");
+
       if (navigator.mediaDevices === undefined) {
         const div = document.createElement("div");
         div.innerHTML = 'mediaDevices not supported';
         document.body.appendChild(div);
       }
+
       // navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
       console.log('navigator.mediaDevices.getUserMedia:', navigator.mediaDevices.getUserMedia)
       if (navigator.mediaDevices.getUserMedia) {
@@ -38,11 +43,12 @@ export default {
               audio: false,
               video: {
                 width: 300,
-                height: 400
+                height: 400,
+                facingMode: { exact: 'environment' }
               }
             },
             function (stream) {
-              const video = document.querySelector('video');
+              // const video = document.querySelector('video');
               video.srcObject = stream;
               video.onloadedmetadata = function () {
                 video.play();
@@ -59,9 +65,7 @@ export default {
         alert("getUserMedia not supported");
       }
 
-      let video = document.getElementById("camera");
-      let canvas = document.getElementById("canvas");
-      let Context = canvas.getContext("2d");
+
       //每过1秒获取一次图片
       setInterval(() => {
         this.takePhoto(video, canvas, Context)
@@ -111,7 +115,7 @@ export default {
 
 <style scoped>
 .container {
-  border: 1px solid green;
+  border: 1px solid blue;
   margin-top: 10px;
 }
 </style>
