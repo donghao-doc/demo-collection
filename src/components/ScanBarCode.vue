@@ -30,34 +30,64 @@ export default {
       let canvas = document.getElementById("canvas");
       let Context = canvas.getContext("2d");
 
-      if (navigator.mediaDevices === undefined) {
-        const div = document.createElement("div");
-        div.innerHTML = 'mediaDevices not supported';
-        document.body.appendChild(div);
+      // navigator.mediaDevices.getUserMedia({audio: true, video:true } }).then(this.getsuccess).catch(this.getMediaError)
+
+      //以下是此方法的兼容性写法，
+      if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function (constraints) {
+          let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia||MediaDevices;
+          if (!getUserMedia) {
+            this.nav=false
+            return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+          }
+          return new Promise(function (resolve, reject) {
+            getUserMedia.call(navigator, constraints, resolve, reject);
+          });
+        }
       }
+
+      // if (navigator.mediaDevices === undefined) {
+      //   const div = document.createElement("div");
+      //   div.innerHTML = 'mediaDevices not supported';
+      //   document.body.appendChild(div);
+      // }
 
       // navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
       console.log('navigator.mediaDevices.getUserMedia:', navigator.mediaDevices.getUserMedia)
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({
-              audio: false,
-              video: {
-                width: 300,
-                height: 400,
-                facingMode: { exact: 'environment' }
-              }
-            },
-            function (stream) {
-              // const video = document.querySelector('video');
-              video.srcObject = stream;
-              video.onloadedmetadata = function () {
-                video.play();
-              };
-            },
-            function (err) {
-              alert("The following error occurred: " + err.name);
-            }
-        );
+          audio: false,
+          video: {
+            width: 300,
+            height: 400,
+          }
+        }).then(stream => {
+          video.srcObject = stream;
+          video.onloadedmetadata = function () {
+            video.play();
+          };
+        }).catch(err => {
+          alert("The following error occurred: " + err.name);
+        })
+
+        // navigator.mediaDevices.getUserMedia({
+        //       audio: false,
+        //       video: {
+        //         width: 300,
+        //         height: 400,
+        //       }
+        //     },
+        //     function (stream) {
+        //       // const video = document.querySelector('video');
+        //       video.srcObject = stream;
+        //       video.onloadedmetadata = function () {
+        //         video.play();
+        //       };
+        //     },
+        //     function (err) {
+        //       alert("The following error occurred: " + err.name);
+        //     }
+        // );
       } else {
         const div = document.createElement("div");
         div.innerHTML = 'getUserMedia not supported';
@@ -108,14 +138,14 @@ export default {
     },
     forgetLove() {
       this.barCode = document.getElementById('barCode').value;
-    }
+    },
   }
 }
 </script>
 
 <style scoped>
 .container {
-  border: 1px solid blue;
+  border: 1px solid orange;
   margin-top: 10px;
 }
 </style>
