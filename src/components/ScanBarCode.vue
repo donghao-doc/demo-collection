@@ -111,7 +111,7 @@ export default {
 
 <style scoped>
 .container {
-  border: 1px solid red;
+  border: 1px solid green;
   margin-top: 10px;
 }
 </style>
