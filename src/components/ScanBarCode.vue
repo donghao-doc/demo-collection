@@ -31,9 +31,10 @@ export default {
         div.innerHTML = 'mediaDevices not supported';
         document.body.appendChild(div);
       }
-      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-      if (navigator.getUserMedia) {
-        navigator.getUserMedia({
+      // navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+      console.log('navigator.mediaDevices.getUserMedia:', navigator.mediaDevices.getUserMedia)
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({
               audio: false,
               video: {
                 width: 300,
